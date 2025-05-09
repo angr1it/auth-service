@@ -1,0 +1,16 @@
+fastapi
+sqlalchemy
+uvicorn
+pydantic[email]
+pydantic-settings
+fastapi_camelcase
+debugpy
+asyncpg
+cryptography
+pytest
+python-jose[cryptography]
+alembic
+greenlet
+argon2_cffi
+passlib[argon2]
+httpx
