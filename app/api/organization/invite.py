@@ -23,6 +23,21 @@ async def invite_user(
     payload: Annotated[TokenMeta, Depends(ensure_owner)],
     sess: AsyncSession = Depends(get_async_session),
 ):
+    """
+    Generate an invite token for a new user.
+
+    Args:
+        body (InviteRequest): The invite request containing operator ID and expiration details.
+        payload (TokenMeta): Token containing user and organization information.
+        sess (AsyncSession): The database session dependency.
+
+    Returns:
+        dict: The invite token and its corresponding URL.
+
+    Notes:
+        - The token is validated to ensure the user is an owner of the organization.
+        - Validation ensures the user exists and has the necessary permissions.
+    """
     now = dt.now(timezone.utc)
     jti = uuid4().hex
     exp = now + timedelta(hours=body.expires_in_hours)

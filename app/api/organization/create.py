@@ -17,6 +17,23 @@ async def create_org(
     req: OrganizationCreateRequest,
     session: AsyncSession = Depends(get_async_session),
 ):
+    """
+    Create a new organization and its owner.
+
+    Args:
+        req (OrganizationCreateRequest): The request containing organization and owner details.
+        session (AsyncSession): The database session dependency.
+
+    Raises:
+        HTTPException: If the organization slug or owner login already exists.
+
+    Returns:
+        dict: The ID of the newly created organization.
+
+    Notes:
+        - Validation ensures the organization slug is unique.
+        - Validation ensures the owner login is unique.
+    """
     if not req.organization_slug:
         req.organization_slug = req.organization_name.lower().replace(" ", "-")[:64]
 

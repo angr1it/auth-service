@@ -24,6 +24,22 @@ async def login_password(
     response: Response,
     session: AsyncSession = Depends(get_async_session),
 ):
+    """
+    Authenticate a user using email and password.
+
+    Args:
+        req (LoginPasswordRequest): The login request containing email, password, and organization ID.
+        response (Response): The HTTP response object to set cookies.
+        session (AsyncSession): The database session dependency.
+
+    Returns:
+        dict: A dictionary containing the access and refresh tokens.
+        The access token is set in the "accessToken" cookie, and the refresh token is set in the "refreshToken" cookie.
+        The tokens are used for authentication in subsequent requests.
+
+    Raises:
+        HTTPException: If the credentials are invalid.
+    """
     res = await session.execute(
         select(User).where(
             User.email == req.email, User.organization_id == req.organization_id

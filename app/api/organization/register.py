@@ -21,6 +21,25 @@ async def register(
     req: RegisterRequest,
     sess: AsyncSession = Depends(get_async_session),
 ):
+    """
+    Register a new user using an invite token.
+
+    Args:
+        invite_token (str): The invite token for registration.
+        req (RegisterRequest): The registration request containing user details.
+        sess (AsyncSession): The database session dependency.
+
+    Raises:
+        HTTPException: If the invite token is invalid, expired, or already used.
+        HTTPException: If the login, email, or operator ID is already in use.
+
+    Returns:
+        dict: The ID of the newly registered user.
+
+    Notes:
+        - The invite token is decoded and validated for type, expiration, and usage.
+        - Validation ensures the login, email, and operator ID are unique within the organization.
+    """
     data = decode_jwt(invite_token)
     if data.get("typ") != "invite":
         raise HTTPException(400)

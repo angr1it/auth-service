@@ -20,6 +20,26 @@ async def current_user(
     token: Annotated[str, Depends(token_from_request)],
     session: AsyncSession = Depends(get_async_session),
 ):
+    """
+    Retrieve the current authenticated user and their permissions.
+
+    Args:
+        token (str): The access token extracted from the request.
+        session (AsyncSession): The database session dependency.
+
+    Returns:
+        UserOutput: The authenticated user's details, including permissions.
+
+    Raises:
+        HTTPException: If the user is not found, their permissions have changed, or validation fails.
+
+    Notes:
+        - The access token is decoded to extract the user ID (`sub`) and organization ID (`org`).
+        - The user and their organization are validated against the database.
+        - If the user's permission version (`perm_version`) does not match the token's version, re-authentication is required.
+        - The user's permissions are fetched and included in the response.
+        - Validation ensures the user exists, belongs to the correct organization, and has up-to-date permissions.
+    """
     payload = decode_access_token(token)
     user_row = await session.execute(
         select(User, Organization)

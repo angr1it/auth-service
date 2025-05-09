@@ -23,6 +23,17 @@ async def logout(
     response: Response,
     session: AsyncSession = Depends(get_async_session),
 ):
+    """
+    Logs out the user by revoking the refresh token and clearing authentication cookies.
+
+    Args:
+        request (Request): The HTTP request object containing cookies.
+        response (Response): The HTTP response object to modify cookies.
+        session (AsyncSession): The database session dependency.
+
+    Returns:
+        dict: A response indicating the logout status.
+    """
     refresh_cookie = request.cookies.get("refreshToken")
     if refresh_cookie:
         try:
@@ -40,6 +51,6 @@ async def logout(
                 )
                 await session.commit()
         except JWTError:
-            pass  # invalid token -> ignore
+            pass
     _clear_auth_cookies(response)
     return {"detail": "ok"}

@@ -23,16 +23,19 @@ async def get_users(
     session: AsyncSession = Depends(get_async_session),
 ):
     """
-    Получает список пользователей для указанной организации.
+    Retrieve a list of users for the specified organization.
 
     Args:
-        req (PaginationModel): Параметры пагинации (offset, limit, page, size).
-        payload (TokenMeta): Токен с информацией о пользователе и организации.
-        session (AsyncSession): Асинхронная сессия SQLAlchemy.
+        req (PaginationModel): Pagination parameters (offset, limit, page, size).
+        payload (TokenMeta): Token containing user and organization information.
+        session (AsyncSession): The database session dependency.
 
     Returns:
-        PaginatedUsers: Объект, содержащий список пользователей, общее количество,
-        текущую страницу, размер страницы и общее количество страниц.
+        PaginatedUsers: A paginated list of users with their details and permissions.
+
+    Notes:
+        - The token is validated to ensure the user is an owner of the organization.
+        - Validation ensures the user exists and has the necessary permissions.
     """
     users, total = await get_users_by_organization(
         session=session, organization_id=payload.org, offset=req.offset, limit=req.limit
@@ -66,19 +69,23 @@ async def update_user_permissions(
     session: AsyncSession = Depends(get_async_session),
 ):
     """
-    Обновляет права доступа пользователя.
+    Update the permissions of a specific user.
 
     Args:
-        user_id (int): ID пользователя, чьи права нужно обновить.
-        req (PermissionEdit): Объект с новыми правами доступа.
-        session (AsyncSession): Асинхронная сессия SQLAlchemy.
+        user_id (int): The ID of the user whose permissions need to be updated.
+        req (PermissionEdit): Object containing the new permissions.
+        session (AsyncSession): The database session dependency.
 
     Raises:
-        HTTPException: Если переданы некорректные права доступа.
+        HTTPException: If invalid permissions are provided.
 
     Returns:
-        200 OK: Если права доступа успешно обновлены.
-        400 Bad Request: Если переданы некорректные права доступа.
+        200 OK: If permissions are successfully updated.
+        400 Bad Request: If invalid permissions are provided.
+
+    Notes:
+        - The token is validated to ensure the user is an owner of the organization.
+        - Validation ensures the user exists and belongs to the correct organization.
     """
     try:
         await add_permissions_to_user(

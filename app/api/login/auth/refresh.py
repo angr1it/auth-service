@@ -25,6 +25,24 @@ async def login_refresh(
     request: Request,
     session: AsyncSession = Depends(get_async_session),
 ):
+    """
+    Refresh the access token using a valid refresh token.
+
+    Args:
+        response (Response): The HTTP response object to set the updated access token cookie.
+        request (Request): The HTTP request object containing the refresh token cookie.
+        session (AsyncSession): The database session dependency.
+
+    Returns:
+        None: The updated access token is set in the "accessToken" cookie.
+
+    Raises:
+        HTTPException: If the refresh token is missing, invalid, expired, revoked, or malformed.
+
+    Notes:
+        - The "accessToken" cookie is updated with a new access token upon successful validation of the refresh token.
+        - The refresh token is validated against the database to ensure it has not been revoked or expired.
+    """
     refresh_cookie = request.cookies.get("refreshToken")
     if not refresh_cookie:
         raise HTTPException(401, "Missing refresh token")
