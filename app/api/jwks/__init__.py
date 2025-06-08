@@ -19,7 +19,7 @@ def _rsa_public_numbers_from_pem(pem: str):
     return numbers.n, numbers.e
 
 
-n_int, e_int = _rsa_public_numbers_from_pem(app_settings.jwt_public_key)
+n_int, e_int = _rsa_public_numbers_from_pem(app_settings.auth_jwt_public_key)
 
 n = (
     base64.urlsafe_b64encode(n_int.to_bytes((n_int.bit_length() + 7) // 8, "big"))

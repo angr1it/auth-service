@@ -39,8 +39,8 @@ async def logout(
         try:
             data = jwt.decode(
                 refresh_cookie,
-                app_settings.jwt_public_key,
-                algorithms=[app_settings.jwt_algorithm],
+                app_settings.auth_jwt_public_key,
+                algorithms=[app_settings.auth_jwt_algorithm],
             )
             jti = data.get("jti")
             if jti:

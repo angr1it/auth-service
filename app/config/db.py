@@ -8,7 +8,7 @@ from config import app_settings
 
 
 engine = create_async_engine(
-    url=str(app_settings.database_dsn),
+    url=str(app_settings.auth_database_dsn),
     echo=app_settings.echo_db_engine,
     pool_pre_ping=True,
 )
