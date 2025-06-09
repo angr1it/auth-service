@@ -26,7 +26,7 @@ if config.config_file_name is not None:
 current_sql_url = config.get_main_option("sqlalchemy.url")
 if not current_sql_url:
     config.set_main_option(
-        "sqlalchemy.url", os.environ["DATABASE_DSN"] + "?async_fallback=True"
+        "sqlalchemy.url", os.environ["AUTH_DATABASE_DSN"] + "?async_fallback=True"
     )
 
 
