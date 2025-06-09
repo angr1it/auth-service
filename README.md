@@ -27,6 +27,11 @@ Auth Service выступает единым центром управления
 
 ---
 
+## Контракты API (основные)
+Полное описание со схемами запросов и ответов см. в файле
+[docs/api_documentation.md](docs/api_documentation.md).
+
+
 ## Архитектура и токены
 
 ### Access Token (JWT)
