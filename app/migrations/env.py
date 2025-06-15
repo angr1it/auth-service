@@ -8,7 +8,7 @@ from sqlalchemy import pool
 
 from alembic import context
 
-from models import *
+from models import *  # noqa: F403,F401
 from models.base import Base
 
 

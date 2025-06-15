@@ -2,7 +2,7 @@ import pytest
 from unittest.mock import AsyncMock
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from tests.helpers.mocks import _async_result_all
+from tests.unit.helpers.mocks import _async_result_all
 from core.permission.helpers import fetch_permissions
 from models.permission import Permission
 from models.resource import Resource
@@ -10,6 +10,7 @@ from models.resource import Resource
 
 @pytest.mark.asyncio
 async def test_fetch_permissions_valid(mocker):
+    """Return permissions grouped by resource."""
     db = AsyncMock(spec=AsyncSession)
 
     resource = Resource(id=10, name="documents")
@@ -25,6 +26,7 @@ async def test_fetch_permissions_valid(mocker):
 
 @pytest.mark.asyncio
 async def test_fetch_permissions_no_permissions(mocker):
+    """Return empty dict when user has no permissions."""
     db = AsyncMock(spec=AsyncSession)
 
     db.execute.return_value = _async_result_all([])
