@@ -1,17 +1,42 @@
-import pytest
-from fastapi import FastAPI
-from fastapi.testclient import TestClient
+import importlib
 from unittest.mock import AsyncMock
 
-from api.login.auth import password as password_module
-from api.login.auth import logout as logout_module
-from api.login.auth import refresh as refresh_module
-from api.login import user as user_module
-from api.organization import create as create_module
-from api.organization import invite as invite_module
-from api.organization import register as register_module
-from api.organization import user as org_user_module
-from models.user import User
+import pytest
+from cryptography.hazmat.primitives.asymmetric import rsa
+from cryptography.hazmat.primitives import serialization
+from fastapi import FastAPI
+from fastapi.testclient import TestClient
+
+from config import app_settings
+
+private_key = rsa.generate_private_key(public_exponent=65537, key_size=2048)
+app_settings.auth_jwt_private_key = private_key.private_bytes(
+    serialization.Encoding.PEM,
+    serialization.PrivateFormat.PKCS8,
+    serialization.NoEncryption(),
+).decode()
+app_settings.auth_jwt_public_key = (
+    private_key.public_key()
+    .public_bytes(
+        serialization.Encoding.PEM,
+        serialization.PublicFormat.SubjectPublicKeyInfo,
+    )
+    .decode()
+)
+app_settings.auth_jwt_algorithm = "RS256"
+
+import api.jwks  # noqa: E402
+from api.login.auth import password as password_module  # noqa: E402
+from api.login.auth import logout as logout_module  # noqa: E402
+from api.login.auth import refresh as refresh_module  # noqa: E402
+from api.login import user as user_module  # noqa: E402
+from api.organization import create as create_module  # noqa: E402
+from api.organization import invite as invite_module  # noqa: E402
+from api.organization import register as register_module  # noqa: E402
+from api.organization import user as org_user_module  # noqa: E402
+from models.user import User  # noqa: E402
+
+importlib.reload(api.jwks)
 
 
 @pytest.fixture

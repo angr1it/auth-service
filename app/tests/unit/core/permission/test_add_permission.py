@@ -3,7 +3,7 @@ import pytest
 from unittest.mock import AsyncMock
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from tests.helpers.mocks import _async_result_one_or_none
+from tests.unit.helpers.mocks import _async_result_one_or_none
 from core.permission.helpers import add_permissions_to_user
 from models.permission import Permission
 from models.resource import Resource
@@ -12,6 +12,7 @@ from models.user import User
 
 @pytest.mark.asyncio
 async def test_add_permissions_valid(mocker):
+    """Valid permissions are added and committed."""
     db = AsyncMock(spec=AsyncSession)
     user = User(id=1)
 
@@ -41,6 +42,7 @@ async def test_add_permissions_valid(mocker):
 
 @pytest.mark.asyncio
 async def test_add_permissions_ignore_invalid_resource(mocker):
+    """Ignore invalid resource when flag set."""
     db = AsyncMock(spec=AsyncSession)
     user = User(id=1)
 
@@ -62,6 +64,7 @@ async def test_add_permissions_ignore_invalid_resource(mocker):
 
 @pytest.mark.asyncio
 async def test_add_permissions_invalid_permission_raises():
+    """Raise error when permission not found."""
     db = AsyncMock(spec=AsyncSession)
     user = User(id=1)
     resource = Resource(id=1, name="docs")

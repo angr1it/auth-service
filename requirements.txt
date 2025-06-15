@@ -14,3 +14,5 @@ greenlet
 argon2_cffi
 passlib[argon2]
 httpx
+pytest-mock
+pytest-asyncio

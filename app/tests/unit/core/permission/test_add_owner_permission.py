@@ -2,7 +2,7 @@ import pytest
 from unittest.mock import AsyncMock
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from tests.helpers.mocks import _async_result_one_or_none
+from tests.unit.helpers.mocks import _async_result_one_or_none
 from core.permission.helpers import add_owner_permission_to_user
 from models.permission import Permission
 from models.resource import Resource
@@ -11,6 +11,7 @@ from models.user import User
 
 @pytest.mark.asyncio
 async def test_add_owner_permission_valid(mocker):
+    """Add owner permission when resource exists."""
     db = AsyncMock(spec=AsyncSession)
     user = User(id=1)
 
@@ -32,6 +33,7 @@ async def test_add_owner_permission_valid(mocker):
 
 @pytest.mark.asyncio
 async def test_add_owner_permission_no_resource(mocker):
+    """Raise error if required resource is missing."""
     db = AsyncMock(spec=AsyncSession)
     user = User(id=1)
 
