@@ -39,9 +39,9 @@ async def ensure_owner(
 ) -> TokenMeta:
     perms = await fetch_permissions(sess, payload.sub)
 
-    if not BuiltinResource.organization in perms:
+    if BuiltinResource.organization not in perms:
         raise HTTPException(403, "Permission denied")
-    if not OrganizationPermissions.owner in perms[BuiltinResource.organization]:
+    if OrganizationPermissions.owner not in perms[BuiltinResource.organization]:
         raise HTTPException(403, "Permission denied")
 
     return payload
