@@ -82,11 +82,13 @@ class User(Base):
         UniqueConstraint("organization_id", "email", name="uq_org_email"),
         Index(
             "uq_org_operator_id",
-            "organization_id", "operator_id",
+            "organization_id",
+            "operator_id",
             unique=True,
             postgresql_where=text("operator_id IS NOT NULL"),
         ),
     )
+
 
 class UserPermission(Base):
     """

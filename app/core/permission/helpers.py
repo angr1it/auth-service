@@ -27,7 +27,7 @@ async def add_permissions_to_user(
         permissions_dict (dict[str, list[str]]): Словарь разрешений в формате {resource_name: [permission_code, ...]}.
         ignore_invalid (bool): Если True, игнорирует несуществующие ресурсы или разрешения. Если False, выбрасывает исключение.
         commit (bool): Если True, изменения будут зафиксированы в базе данных.
-        upsert (bool): Если True, добавляет разрешения из permissions_dict, сохраняя существующие. 
+        upsert (bool): Если True, добавляет разрешения из permissions_dict, сохраняя существующие.
                        Если False, удаляет все текущие разрешения пользователя и заменяет их на permissions_dict.
 
     Raises:
@@ -133,7 +133,9 @@ async def add_owner_permission_to_user(
         user_id (int): ID пользователя.
         commit (bool): Если True, изменения будут зафиксированы в базе данных.
     """
-    permissions_dict = {BuiltinResource.organization.value: [OrganizationPermissions.owner.value]}
+    permissions_dict = {
+        BuiltinResource.organization.value: [OrganizationPermissions.owner.value]
+    }
     await add_permissions_to_user(
         db=db,
         user_id=user_id,
