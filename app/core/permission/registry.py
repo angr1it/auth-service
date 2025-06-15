@@ -11,6 +11,7 @@ Variables:
     BUILTIN_PERMISSIONS (dict[str, list[str]]): Словарь встроенных разрешений для каждого ресурса.
 """
 
+
 class BuiltinResource(str, Enum):
     organization = "organization"
 
@@ -20,5 +21,7 @@ class OrganizationPermissions(str, Enum):
 
 
 BUILTIN_PERMISSIONS: dict[str, list[str]] = {
-    BuiltinResource.organization.value: [perm.value for perm in OrganizationPermissions],
+    BuiltinResource.organization: [
+        perm.value for perm in OrganizationPermissions.__members__.values()
+    ],
 }

@@ -29,6 +29,7 @@ class Resource(Base):
         permissions (list[Permission]): Список разрешений, связанных с ресурсом.
         added_at (datetime): Дата и время создания записи.
     """
+
     __tablename__ = "resources"
     id: Mapped[int] = mapped_column(primary_key=True)
     name: Mapped[str] = mapped_column(String, unique=True)
