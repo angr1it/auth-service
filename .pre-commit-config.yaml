@@ -27,7 +27,7 @@ repos:
       - id: pytest
         name: Run tests with coverage
         entry: |
-          bash -c "pip install -r requirements.txt && pytest --cov=app --cov-report=xml:coverage.xml --cov-report=html --cov-fail-under=85 -q"
+          bash -c "pip install -r requirements.txt pytest-cov && pytest --cov=app --cov-report=xml:coverage.xml --cov-report=html --cov-fail-under=85 -q"
         language: python
         pass_filenames: false
         always_run: true

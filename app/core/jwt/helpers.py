@@ -32,7 +32,9 @@ def issue_access_token(user: User) -> str:
         "pv": user.perm_version,
     }
     return jwt.encode(
-        payload, app_settings.auth_jwt_private_key, algorithm=app_settings.auth_jwt_algorithm
+        payload,
+        app_settings.auth_jwt_private_key,
+        algorithm=app_settings.auth_jwt_algorithm,
     )
 
 
@@ -48,11 +50,11 @@ def issue_refresh_token(user: User, session: AsyncSession) -> str:
         "exp": int(exp.timestamp()),
     }
     token = jwt.encode(
-        payload, app_settings.auth_jwt_private_key, algorithm=app_settings.auth_jwt_algorithm
+        payload,
+        app_settings.auth_jwt_private_key,
+        algorithm=app_settings.auth_jwt_algorithm,
     )
-    rt = RefreshToken(
-        jti=jti, user_id=user.id, expires_at=exp
-    )
+    rt = RefreshToken(jti=jti, user_id=user.id, expires_at=exp)
     session.add(rt)
     return token
 
@@ -60,12 +62,12 @@ def issue_refresh_token(user: User, session: AsyncSession) -> str:
 def decode_access_token(token: str) -> JwtPayload:
     try:
         data = jwt.decode(
-            token, app_settings.auth_jwt_public_key, algorithms=[app_settings.auth_jwt_algorithm]
+            token,
+            app_settings.auth_jwt_public_key,
+            algorithms=[app_settings.auth_jwt_algorithm],
         )
         return JwtPayload(**data)
     except JWTError as exc:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid token"
         ) from exc
-
-

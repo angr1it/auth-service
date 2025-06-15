@@ -49,21 +49,21 @@ async def register(
     if not used or used.used_at:
         raise HTTPException(400, "Already used")
 
-    existing_user = await sess.execute(
-        select(User).filter_by(login=req.login)
-    )
+    existing_user = await sess.execute(select(User).filter_by(login=req.login))
     if existing_user.scalar():
         raise HTTPException(400, "Login already in use")
 
     conflicting_user = await sess.execute(
         select(User).filter(
             User.organization_id == data["org"],
-            (User.email == req.email) | 
-            ((User.operator_id == data.get("op")) & (data.get("op") is not None))
+            (User.email == req.email)
+            | ((User.operator_id == data.get("op")) & (data.get("op") is not None)),
         )
     )
     if conflicting_user.scalar():
-        raise HTTPException(400, "Email or operator_id already in use within the organization")
+        raise HTTPException(
+            400, "Email or operator_id already in use within the organization"
+        )
 
     user = User(
         organization_id=data["org"],

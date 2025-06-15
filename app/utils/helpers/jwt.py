@@ -10,14 +10,18 @@ utcnow = lambda: dt.datetime.now(dt.timezone.utc)
 
 def sign_jwt(payload: dict) -> str:
     return jwt.encode(
-        payload, app_settings.auth_jwt_private_key, algorithm=app_settings.auth_jwt_algorithm
+        payload,
+        app_settings.auth_jwt_private_key,
+        algorithm=app_settings.auth_jwt_algorithm,
     )
 
 
 def decode_jwt(token: str) -> dict:
     try:
         return jwt.decode(
-            token, app_settings.auth_jwt_public_key, algorithms=[app_settings.auth_jwt_algorithm]
+            token,
+            app_settings.auth_jwt_public_key,
+            algorithms=[app_settings.auth_jwt_algorithm],
         )
     except JWTError:
         raise HTTPException(401, "Invalid token")
