@@ -1,13 +1,15 @@
-import pytest
+"""Unit tests for JWKS endpoint."""
 
 from fastapi.testclient import TestClient
-
-from api.jwks import router
-
-client = TestClient(router)
+import importlib
 
 
 def test_jwks_endpoint():
+    """Return JWKS with RSA key."""
+    import api.jwks
+
+    importlib.reload(api.jwks)
+    client = TestClient(api.jwks.router)
     response = client.get("/.well-known/jwks.json")
     assert response.status_code == 200
     jwks = response.json()

@@ -3,13 +3,14 @@ from fastapi.testclient import TestClient
 from unittest.mock import AsyncMock, MagicMock, patch
 
 from models.user import User
-from tests.api.mocks import session_mock, user_stub, client, app
+from tests.unit.api.mocks import session_mock, user_stub, client, app
 from api.login.auth import password as password_module
 
 
 def test_login_password_success(
     client: TestClient, session_mock: AsyncMock, user_stub: User
 ):
+    """Successful login sets cookies and tokens."""
     execute_result = MagicMock()
     execute_result.scalar_one_or_none.return_value = user_stub
     session_mock.execute.return_value = execute_result
@@ -47,6 +48,7 @@ def test_login_password_success(
 def test_login_password_invalid_credentials(
     client: TestClient, session_mock: AsyncMock
 ):
+    """Invalid credentials return 400."""
     execute_result = MagicMock()
     execute_result.scalar_one_or_none.return_value = None
     session_mock.execute.return_value = execute_result
