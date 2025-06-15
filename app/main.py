@@ -1,3 +1,5 @@
+from typing import List
+
 from fastapi import FastAPI, Request
 from fastapi.exceptions import RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware
@@ -11,6 +13,7 @@ from config.db import db_session
 async def startup_event():
     async with db_session() as session:
         await ensure_base_permissions(db=session)
+
 
 app = FastAPI()
 
@@ -35,7 +38,7 @@ async def validation_exception_handler(request: Request, exc: RequestValidationE
     )
 
 
-origins = []
+origins: List[str] = []
 
 app.add_middleware(
     CORSMiddleware,

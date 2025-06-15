@@ -12,7 +12,7 @@ def _set_access_cookie(response: Response, access: str):
         secure=True,
         samesite="lax",
         domain=app_settings.cookie_domain,
-        path="/"
+        path="/",
     )
 
 
@@ -25,7 +25,7 @@ def _set_refresh_cookie(response: Response, refresh: str):
         secure=True,
         samesite="lax",
         domain=app_settings.cookie_domain,
-        path="/"
+        path="/",
     )
 
 

@@ -1,11 +1,9 @@
-from typing import Optional
-
 from fastapi_camelcase import CamelModel
 
 
 class PaginationModel(CamelModel):
-    page: Optional[int] = 1
-    size: Optional[int] = 10
+    page: int = 1
+    size: int = 10
 
     @property
     def offset(self) -> int:
