@@ -26,3 +26,5 @@ class AppSettings(BaseSettings):
 
 
 app_settings = AppSettings()
+print("App settings loaded successfully.")
+print(app_settings.model_dump())
