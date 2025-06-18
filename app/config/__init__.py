@@ -1,7 +1,7 @@
 from datetime import timedelta
 from typing import Optional
 
-from pydantic import PostgresDsn
+from pydantic import PostgresDsn, field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -24,6 +24,9 @@ class AppSettings(BaseSettings):
 
     model_config = SettingsConfigDict(env_file=(".env"), extra="ignore")
 
+    @field_validator("auth_jwt_private_key", "auth_jwt_public_key", mode="after")
+    def _fix(cls, v):
+        return v.replace("\\n", "\n")
 
 app_settings = AppSettings()
 print("App settings loaded successfully.")
