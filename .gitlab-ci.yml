@@ -1,0 +1,3 @@
+include:
+  - project: 'owlvise/develop/ci/auth-service'
+    file: 'ci.yaml'
