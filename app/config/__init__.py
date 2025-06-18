@@ -29,5 +29,3 @@ class AppSettings(BaseSettings):
         return v.replace("\\n", "\n")
 
 app_settings = AppSettings()
-print("App settings loaded successfully.")
-print(app_settings.model_dump())
