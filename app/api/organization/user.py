@@ -1,6 +1,6 @@
 from typing import Annotated
 
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Body, Path
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from schemas.permission import PermissionEdit
@@ -16,9 +16,14 @@ from core.permission.helpers import fetch_permissions, add_permissions_to_user
 router = APIRouter()
 
 
-@router.post("/users", response_model=PaginatedUsers)
+@router.post(
+    "/users",
+    summary="Возвращает список пользователей организации.",
+    description="Возвращается список пользователей с их данными, а также общее количество пользователей, общее число страниц и текущий номер страницы для пагинации.",
+    response_model=PaginatedUsers
+)
 async def get_users(
-    req: PaginationModel,
+    req: Annotated[PaginationModel, Body()],
     payload: Annotated[TokenMeta, Depends(ensure_owner)],
     session: AsyncSession = Depends(get_async_session),
 ):
@@ -37,6 +42,7 @@ async def get_users(
         - The token is validated to ensure the user is an owner of the organization.
         - Validation ensures the user exists and has the necessary permissions.
     """
+
     users, total = await get_users_by_organization(
         session=session, organization_id=payload.org, offset=req.offset, limit=req.limit
     )
@@ -61,12 +67,19 @@ async def get_users(
     )
 
 
-@router.post("/users/{user_id}/permissions")
+@router.post(
+    "/users/{user_id}/permissions",
+    summary="Обновление разрешений пользователя.",
+    description="Обновление разрешений у переданного пользователя.",
+    responses={
+        400: {"description": "Текст исключения"}
+    }
+)
 async def update_user_permissions(
-    user_id: int,
-    req: PermissionEdit,
+    user_id: Annotated[int, Path()],
+    req: Annotated[PermissionEdit, Body()],
     _: Annotated[TokenMeta, Depends(ensure_owner)],
-    session: AsyncSession = Depends(get_async_session),
+    session: Annotated[AsyncSession, Depends(get_async_session)],
 ):
     """
     Update the permissions of a specific user.

@@ -1,25 +1,34 @@
 from datetime import datetime as dt
 from datetime import timezone
 
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Path, Body
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from models.registration_token import RegistrationToken
 from models.user import User
-from schemas.register import RegisterRequest
+from schemas.register import RegisterRequest, RegisterResponse
 from utils.helpers.jwt import decode_jwt
 from config.db import get_async_session
 from passlib.hash import argon2
+from typing import Annotated
 
 router = APIRouter()
 
 
-@router.post("/register/{invite_token}")
+@router.post(
+    "/register/{invite_token}",
+    summary="Регистрация по токену‑инвайту.",
+    description="Регистрирует нового пользователя используя токен-инвайт. Возвращает id пользователя",
+    response_model=RegisterResponse,
+    responses={
+        400: {"description": "Invite expired. Already used. Login already in use. Email or operator_id already in use within the organization"}
+    }
+)
 async def register(
-    invite_token: str,
-    req: RegisterRequest,
-    sess: AsyncSession = Depends(get_async_session),
+    invite_token: Annotated[str, Path()],
+    req: Annotated[RegisterRequest, Body()],
+    sess: Annotated[AsyncSession, Depends(get_async_session)]
 ):
     """
     Register a new user using an invite token.
@@ -40,6 +49,7 @@ async def register(
         - The invite token is decoded and validated for type, expiration, and usage.
         - Validation ensures the login, email, and operator ID are unique within the organization.
     """
+
     data = decode_jwt(invite_token)
     if data.get("typ") != "invite":
         raise HTTPException(400)
@@ -77,4 +87,4 @@ async def register(
     used.used_at = dt.now(timezone.utc)
     user_id = user.id
     await sess.commit()
-    return {"id": user_id}
+    return RegisterResponse(id=user_id)

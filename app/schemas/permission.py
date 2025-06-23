@@ -1,8 +1,8 @@
 from fastapi_camelcase import CamelModel
-
+from pydantic import Field
 
 class PermissionBase(CamelModel):
-    permissions: dict[str, list[str]]
+    permissions: dict[str, list[str]] = Field(..., example={ "calls": ["READ", "WRITE"] })
 
 
 class PermissionEdit(PermissionBase):

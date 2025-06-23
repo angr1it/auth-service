@@ -6,7 +6,7 @@ from cryptography.hazmat.backends import default_backend
 from fastapi import APIRouter
 
 from config import app_settings
-
+from schemas.token import JWKSResponse
 
 router = APIRouter()
 
@@ -42,6 +42,11 @@ JWKS_DOC = {
 }
 
 
-@router.get("/.well-known/jwks.json")
+@router.get(
+    "/.well-known/jwks.json",
+    summary="Получить публичный RSA-ключ",
+    description="Публичный RSA‑ключ для проверки подписи JWT",
+    response_model=JWKSResponse
+)
 async def jwks():
-    return JWKS_DOC
+    return JWKSResponse(keys=JWKS_DOC["keys"])
