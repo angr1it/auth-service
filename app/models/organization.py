@@ -20,6 +20,9 @@ class Organization(Base):
     registration_tokens: Mapped[list["RegistrationToken"]] = relationship(
         back_populates="organization", cascade="all, delete-orphan"
     )
+    departments: Mapped[list["Department"]] = relationship(back_populates="organization")
+    employees: Mapped[list["Employee"]] = relationship(back_populates="organization")
+    org_roles: Mapped[list["OrgRole"]] = relationship(back_populates="organization")
 
     added_at: Mapped[datetime.datetime] = mapped_column(
         TIMESTAMP(timezone=True),
