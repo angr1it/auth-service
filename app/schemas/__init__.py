@@ -1,9 +1,9 @@
 from fastapi_camelcase import CamelModel
-
+from pydantic import Field
 
 class PaginationModel(CamelModel):
-    page: int = 1
-    size: int = 10
+    page: int = Field(default=1, example=1)
+    size: int = Field(default=10, example=10)
 
     @property
     def offset(self) -> int:

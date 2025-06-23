@@ -15,10 +15,20 @@ from config.db import get_async_session
 router = APIRouter()
 
 
-@router.get("/user", response_model=UserOutput)
+@router.get(
+    "/user",
+    summary="Предоставляет обобщённую информацию о текущем пользователе",
+    description="Предоставляет обобщённую информацию о текущем пользователе, включая email, ID, аватар, наименование организации и права доступа по ресурсам. Используется клиентом для определения интерфейса, доступного пользователю.",
+    response_model=UserOutput,
+    responses={
+        404: {"description": "User not found"},
+        401: {"description": "Permissions changed; re‑authenticate"},
+    }
+    
+)
 async def current_user(
     token: Annotated[str, Depends(token_from_request)],
-    session: AsyncSession = Depends(get_async_session),
+    session: Annotated[AsyncSession, Depends(get_async_session)],
 ):
     """
     Retrieve the current authenticated user and their permissions.

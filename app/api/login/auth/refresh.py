@@ -14,16 +14,23 @@ from utils.cookie.helpers import (
 )
 from config.db import get_async_session
 from config import app_settings
-
+from typing import Annotated
 
 router = APIRouter()
 
 
-@router.get("/refresh")
+@router.get(
+    "/refresh",
+    summary="Обновление accessToken",
+    description="Обновляет accessToken, если refreshToken валидный.",
+    responses={
+        401: {"description": "Missing refresh token. Invalid refresh token. Malformed refresh token. Refresh token revoked or expired"}
+    }
+)
 async def login_refresh(
     response: Response,
     request: Request,
-    session: AsyncSession = Depends(get_async_session),
+    session: Annotated[AsyncSession, Depends(get_async_session)],
 ):
     """
     Refresh the access token using a valid refresh token.

@@ -13,15 +13,30 @@ from utils.cookie.helpers import (
 )
 from config import app_settings
 from config.db import get_async_session
+from typing import Annotated
+
 
 router = APIRouter()
 
 
-@router.post("/logout")
+@router.post(
+    "/logout",
+    summary="Отзыв refresh токена и очистка cookie",
+    description="Удаляет refresh токен и очищает cookie.",
+    responses={
+        200: {
+            "content": {
+                "application/json": {
+                    "example": {"detail": "ok"}
+                }
+            }
+        }
+    }
+)
 async def logout(
     request: Request,
     response: Response,
-    session: AsyncSession = Depends(get_async_session),
+    session: Annotated[AsyncSession, Depends(get_async_session)],
 ):
     """
     Logs out the user by revoking the refresh token and clearing authentication cookies.

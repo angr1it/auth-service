@@ -1,4 +1,4 @@
-from fastapi import Depends, HTTPException, APIRouter
+from fastapi import Depends, HTTPException, APIRouter, Body
 from passlib.hash import argon2
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -6,16 +6,24 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from models.user import User
 from config.db import get_async_session
 from models.organization import Organization
-from schemas.organization import OrganizationCreateRequest
+from schemas.organization import OrganizationCreateRequest, OrganizationCreateResponse
 from core.permission.helpers import add_owner_permission_to_user
-
+from typing import Annotated
 router = APIRouter()
 
 
-@router.post("/create")
+@router.post(
+    "/create",
+    summary="Создание организации и владельца.",
+    description="Возвращает id созданной организации",
+    response_model=OrganizationCreateResponse,
+    responses={
+        400: {"description": "organization slug already exists. login already exists"}
+    }
+)
 async def create_org(
-    req: OrganizationCreateRequest,
-    session: AsyncSession = Depends(get_async_session),
+    session: Annotated[AsyncSession, Depends(get_async_session)],
+    req: Annotated[OrganizationCreateRequest, Body()]
 ):
     """
     Create a new organization and its owner.
@@ -66,4 +74,4 @@ async def create_org(
     )
     org_id = org.id
     await session.commit()
-    return {"organizationId": org_id}
+    return OrganizationCreateResponse(organizationId=org_id)

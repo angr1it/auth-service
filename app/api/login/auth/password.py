@@ -1,4 +1,4 @@
-from fastapi import Depends, HTTPException, Response
+from fastapi import Depends, HTTPException, Response, Body
 from passlib.hash import argon2
 from sqlalchemy import (
     select,
@@ -8,21 +8,26 @@ from fastapi import APIRouter
 
 from core.jwt.helpers import issue_access_token, issue_refresh_token
 from models.user import User
-from schemas.login import LoginPasswordRequest
+from schemas.login import LoginPasswordRequest, LoginPasswordResponse
 from utils.cookie.helpers import (
     _set_auth_cookies,
 )
 from config.db import get_async_session
-
+from typing import Annotated
 
 router = APIRouter()
 
 
-@router.post("/password")
+@router.post(
+    "/password",
+    summary="Аутентификация с паролем",
+    description="Принимает email и пароль пользователя. В случае успеха возвращает 200 код и устанавливает куку `accessToken` и `refreshToken`.",
+    response_model=LoginPasswordResponse
+)
 async def login_password(
-    req: LoginPasswordRequest,
+    req: Annotated[LoginPasswordRequest, Body()],
+    session: Annotated[AsyncSession, Depends(get_async_session)],
     response: Response,
-    session: AsyncSession = Depends(get_async_session),
 ):
     """
     Authenticate a user using email and password.
@@ -54,4 +59,4 @@ async def login_password(
     await session.commit()
 
     _set_auth_cookies(response, access, refresh)
-    return {"accessToken": access, "refreshToken": refresh}
+    return LoginPasswordResponse(accessToken=access, refreshToken=refresh)
