@@ -1,7 +1,7 @@
 from __future__ import annotations
 import datetime
 
-from sqlalchemy import TIMESTAMP, ForeignKey, text, Index, PrimaryKeyConstraint
+from sqlalchemy import TIMESTAMP, ForeignKey, text, Index, UniqueConstraint
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from models.base import Base
@@ -15,6 +15,7 @@ class DepartmentEmployeeOrgRole(Base):
     Модель связи сотрудника с отделом и ролью.
 
     Attributes:
+        id (int): Уникальный идентификатор связи сотрудника с отделом и ролью
         employee_id (int): ID сотрудника
         department_id (int): ID отдела
         org_role_id (int): ID роли
@@ -28,6 +29,7 @@ class DepartmentEmployeeOrgRole(Base):
     """
     __tablename__ = "department_employee_org_roles"
 
+    id: Mapped[int] = mapped_column(primary_key=True)
     employee_id: Mapped[int] = mapped_column(ForeignKey("employees.id"), nullable=False)
     department_id: Mapped[int] = mapped_column(ForeignKey("departments.id"), nullable=False)
     org_role_id: Mapped[int] = mapped_column(ForeignKey("org_roles.id"), nullable=False)
@@ -51,9 +53,9 @@ class DepartmentEmployeeOrgRole(Base):
     org_role: Mapped["OrgRole"] = relationship(back_populates="employee_departments")
 
     __table_args__ = (
-        PrimaryKeyConstraint(
+        UniqueConstraint(
             "department_id", "employee_id", "org_role_id",
-            name="pk_department_employee_org_roles"
+            name="uq_department_employee_org_roles"
         ),
         Index("idx_department_employee_org_roles_employee_id", "employee_id"),
         Index("idx_department_employee_org_roles_department_id", "department_id"),

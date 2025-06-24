@@ -1,7 +1,7 @@
 from __future__ import annotations
 import datetime
 
-from sqlalchemy import TIMESTAMP, String, ForeignKey, text, Index
+from sqlalchemy import TIMESTAMP, String, ForeignKey, text, Index, UniqueConstraint
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from models.base import Base
@@ -55,6 +55,7 @@ class Department(Base):
     employee_roles: Mapped[list["DepartmentEmployeeOrgRole"]] = relationship(back_populates="department")
 
     __table_args__ = (
+        UniqueConstraint("name", "organization_id", name="uq_departments_name_organization"),
         Index("idx_departments_path", "path"),
         Index("idx_departments_organization_id", "organization_id"),
         Index("idx_departments_parent_id", "parent_id"),
