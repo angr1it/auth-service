@@ -54,6 +54,7 @@ class User(Base):
     perm_version: Mapped[int] = mapped_column(default=1)
     avatar_url: Mapped[str | None] = mapped_column(String)
 
+    # ToDo: убрать здесь operator_id после изменения методов на использование operator_id из модели Employee
     operator_id: Mapped[int] = mapped_column(nullable=True)
 
     permissions: Mapped[list["UserPermission"]] = relationship(back_populates="user")
@@ -64,6 +65,7 @@ class User(Base):
     created_registration_tokens: Mapped[list["RegistrationToken"]] = relationship(
         back_populates="creator"
     )
+    employee: Mapped["Employee"] = relationship(back_populates="user")
 
     added_at: Mapped[datetime.datetime] = mapped_column(
         TIMESTAMP(timezone=True),
@@ -80,6 +82,7 @@ class User(Base):
 
     __table_args__ = (
         UniqueConstraint("organization_id", "email", name="uq_org_email"),
+        # ToDo: убрать здесь uq_org_operator_id после изменения методов на использование operator_id из модели Employee
         Index(
             "uq_org_operator_id",
             "organization_id",
