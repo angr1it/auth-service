@@ -91,6 +91,10 @@ def upgrade() -> None:
     op.create_index('idx_department_employee_org_roles_department_id', 'department_employee_org_roles', ['department_id'], unique=False)
     op.create_index('idx_department_employee_org_roles_employee_id', 'department_employee_org_roles', ['employee_id'], unique=False)
     op.create_index('idx_department_employee_org_roles_org_role_id', 'department_employee_org_roles', ['org_role_id'], unique=False)
+
+    # Вставка seed-данных
+    roles_table = sa.table('roles', sa.column('id', sa.Integer), sa.column('name', sa.String), sa.column('code', sa.String))
+    op.bulk_insert(roles_table, [{'id': 1, 'name': 'Контроллер', 'code': 'CONTROLLER'}, {'id': 2, 'name': 'Оператор', 'code': 'OPERATOR'}])
     # ### end Alembic commands ###
 
 
